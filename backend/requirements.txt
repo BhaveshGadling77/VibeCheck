@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+psycopg2-binary
+numpy
+scipy
+pydub
+python-multipart
+pyjwt
+python-dotenv
+dotenv
