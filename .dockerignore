@@ -1,0 +1,11 @@
+.git
+.gitignore
+**/.env
+**/.env.*
+**/node_modules
+**/.expo
+**/.venv
+**/__pycache__
+**/*.py[cod]
+backend/songs
+app

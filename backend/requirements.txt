@@ -8,3 +8,4 @@ python-multipart
 pyjwt
 python-dotenv
 dotenv
+pandas
