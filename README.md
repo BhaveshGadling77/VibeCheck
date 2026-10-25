@@ -12,13 +12,35 @@ Android app (React Expo) records ~6 s of audio → laptop backend (FastAPI) fing
 
 ## Run with Docker (Linux)
 
-1. Copy `.env.example` to `.env`; set a private `DB_PASSWORD` and `JWT_SECRET`.
-2. Copy `app/.env.example` to `app/.env` and set `EXPO_PUBLIC_API_URL` to your laptop's LAN IP, for example `http://192.168.1.20:8000`.
-3. Put tracks in `backend/songs/`. This directory is ignored by Git and mounted read-only into the API container for seeding.
-4. Start PostgreSQL and the API: `docker compose up --build -d`.
-5. Seed the database: `docker compose run --rm api python seed_db.py`.
+1. Create the local environment files:
+
+   ```bash
+   cp .env.example .env
+   cp app/.env.example app/.env
+   ```
+
+2. Edit `.env` and set a private `DB_PASSWORD` and `JWT_SECRET`. Edit `app/.env` and set `EXPO_PUBLIC_API_URL` to your laptop's LAN IP, for example `http://192.168.1.20:8000`. Your phone and laptop must be on the same network.
+3. Put audio tracks in `backend/songs/`. This directory is ignored by Git and mounted read-only into the API container for seeding.
+4. Build and start PostgreSQL and the API:
+
+   ```bash
+   docker compose up --build -d
+   ```
+
+5. If you added audio files, seed the database:
+
+   ```bash
+   docker compose run --rm api python seed_db.py
+   ```
+
 6. Open the API docs at `http://localhost:8000/docs`.
-7. To run the Expo dev server in Docker and show its QR code, run `docker compose --profile mobile up --build` and scan it with Expo Go. The mobile profile uses Linux host networking so a physical phone can reach Metro and the API at your laptop's LAN IP.
+7. To also run Expo in Docker and show its QR code, run this command and scan the code with Expo Go:
+
+   ```bash
+   docker compose --profile mobile up --build
+   ```
+
+   The mobile profile uses Linux host networking so a physical phone can reach Metro and the API at your laptop's LAN IP.
 
 Use `docker compose down` to stop the services; the PostgreSQL volume remains. `docker compose down -v` also deletes the database volume and its data. PostgreSQL initializes `schema.sql` only when that volume is first created.
 
