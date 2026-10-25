@@ -11,7 +11,7 @@ Android app (React Expo) records ~6 s of audio → laptop backend (FastAPI) fing
 6. `uvicorn main:app --host 0.0.0.0 --port 8000` (allow port 8000 in Windows Firewall)
 
 ## Setup (mobile)
-1. Set your laptop LAN IP in `app/config.js` (phone and laptop on same Wi-Fi / hotspot).
+1. Copy `app/.env.example` to `app/.env` and set `EXPO_PUBLIC_API_URL` to your laptop LAN IP (phone and laptop on same Wi-Fi / hotspot).
 2. `cd app && npm install && npx expo start`, open with Expo Go on the phone.
 3. Register → Listen → play a seeded song on another device → see the match; check the History tab.
 

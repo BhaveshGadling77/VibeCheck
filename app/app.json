@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "VibeCheck",
+    "slug": "vibecheck-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "android": {
+      "permissions": [
+        "RECORD_AUDIO"
+      ]
+    },
+    "plugins": [
+      "expo-asset",
+      "expo-font",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "VibeCheck needs the microphone to listen to music."
+        }
+      ]
+    ]
+  }
+}
