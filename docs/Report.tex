@@ -12,8 +12,9 @@
 \usepackage{listings}
 \usepackage{caption}
 \usepackage{tikz}
-
-\usetikzlibrary{arrows.meta,calc,shapes.geometric}
+\usepackage{pdflscape}
+\usetikzlibrary{shapes.geometric, positioning}
+\usetikzlibrary{shapes.geometric, positioning}
 \usepackage[hidelinks]{hyperref}
 
 \definecolor{maroon}{RGB}{110,30,30}
@@ -238,102 +239,311 @@ Has & Song -- Fingerprint & 1 : N & total on Fingerprint, partial on Song & A so
 \end{longtable}
 \textbf{Notes.} (i) \cl{tot_songs} is a derived attribute: it equals the number of songs of the artist, and is shown with a dashed oval. (ii) Because the same user can recognize the same song many times, each instance of \emph{Recognizes} needs its own identity, so a surrogate key \cl{history_id} is used when the relationship is converted to a table.
 
+% Preamble:
+% \usepackage{tikz}
+% \usepackage{graphicx}
+% \usepackage{pdflscape}
+% \usetikzlibrary{shapes.geometric}
+
+% Preamble requirements:
+% \usepackage{tikz}
+% \usepackage{graphicx}
+% \usepackage{pdflscape}
+% \usetikzlibrary{shapes.geometric}
+
 \begin{landscape}
 \begin{figure}[p]
 \centering
+
 \resizebox{\linewidth}{!}{%
 \begin{tikzpicture}[
-  ent/.style={draw, rectangle, thick, minimum width=2.4cm, minimum height=0.9cm, font=\small\bfseries, fill=yellow!25},
-  attr/.style={draw, ellipse, minimum height=0.65cm, inner sep=1.5pt, font=\scriptsize, fill=white},
-  der/.style={attr, dashed},
-  rel/.style={draw, diamond, thick, aspect=2.2, inner sep=1pt, font=\scriptsize\bfseries, fill=cyan!12},
-  card/.style={font=\footnotesize\bfseries, fill=white, inner sep=1.5pt}]
+    entity/.style={
+        rectangle,
+        draw=black,
+        thick,
+        minimum width=1.8cm,
+        minimum height=0.8cm,
+        font=\normalsize
+    },
+    relationship/.style={
+        diamond,
+        draw=black,
+        thick,
+        aspect=2,
+        minimum width=2cm,
+        minimum height=0.9cm,
+        font=\normalsize
+    },
+    attribute/.style={
+        ellipse,
+        draw=black,
+        thick,
+        minimum height=0.65cm,
+        inner xsep=5pt,
+        font=\small
+    },
+    derived/.style={
+        attribute,
+        dashed
+    },
+    conn/.style={thick}
+]
 
-% entities
-\node[ent] (U) at (-11.5,0) {User};
-\node[ent] (S) at (0,0) {Song};
-\node[ent] (A) at (11.5,0) {Artist};
-\node[ent] (F) at (0,7.6) {Fingerprint};
-\node[ent] (G) at (0,-7.6) {Genre};
+% =====================================================
+% ENTITIES
+% =====================================================
 
-% relationships
-\node[rel] (R1) at (-5.8,0) {Recognizes};
-\node[rel] (R2) at (5.8,0) {Performs};
-\node[rel] (R3) at (0,-3.9) {Belongs to};
-\node[rel] (R4) at (0,3.9) {Has};
+\node[entity] (User) at (-12,0) {User};
+\node[entity] (Song) at (0,0) {Song};
+\node[entity] (Artist) at (12,0) {Artist};
 
-% Song attributes
-\node[attr] (s1) at (-2.6,2.0) {\underline{song\_id}};
-\node[attr] (s2) at (-5.0,2.0) {title};
-\node[attr] (s3) at (2.6,2.0) {duration};
-\node[attr] (s4) at (5.2,2.0) {release\_year};
-\node[attr] (s5) at (-2.6,-1.9) {audio\_file\_url};
-\node[attr] (s6) at (2.6,-1.9) {created\_at};
+\node[entity] (Fingerprint) at (-5,-7.5) {Fingerprint};
+\node[entity] (Genre) at (5,-7.5) {Genre};
 
-% relationship attributes
-\node[attr] (r1a) at (-6.0,-1.8) {recognized\_at};
-\node[attr] (r2a) at (5.8,-1.8) {role};
 
-% User attributes
-\node[attr] (u1) at (-8.9,2.7) {\underline{user\_id}};
-\node[attr] (u2) at (-11.0,2.7) {name};
-\node[attr] (u3) at (-13.1,2.7) {email};
-\node[attr] (u4) at (-9.4,-2.7) {password\_hash};
-\node[attr] (u5) at (-12.2,-2.7) {created\_at};
+% =====================================================
+% USER ATTRIBUTES
+% =====================================================
 
-% Artist attributes
-\node[attr] (a1) at (8.9,2.7) {\underline{artist\_id}};
-\node[attr] (a2) at (11.0,2.7) {name};
-\node[attr] (a3) at (13.0,2.7) {stage\_name};
-\node[attr] (a4) at (15.0,2.7) {dob};
-\node[attr] (a5) at (8.9,-2.7) {nationality};
-\node[der]  (a6) at (11.1,-2.7) {tot\_songs};
-\node[attr] (a7) at (13.1,-2.7) {awards};
-\node[attr] (a8) at (14.9,-2.7) {bio};
+\node[attribute] (uid) at (-15,1.8)
+    {\underline{user\_id}};
 
-% Fingerprint attributes
-\node[attr] (f1) at (-3.6,7.6) {\underline{fp\_id}};
-\node[attr] (f2) at (3.6,8.4) {hash};
-\node[attr] (f3) at (3.6,6.8) {time\_offset};
+\node[attribute] (uemail) at (-15,3.5)
+    {email};
 
-% Genre attributes
-\node[attr] (g1) at (-3.6,-7.6) {\underline{genre\_id}};
-\node[attr] (g2) at (3.6,-6.9) {name};
-\node[attr] (g3) at (3.8,-8.4) {description};
+\node[attribute] (uname) at (-9,3.5)
+    {name};
 
-% attribute lines
-\foreach \e/\a in {S/s1,S/s2,S/s3,S/s4,S/s5,S/s6,
-  U/u1,U/u2,U/u3,U/u4,U/u5,
-  A/a1,A/a2,A/a3,A/a4,A/a5,A/a6,A/a7,A/a8,
-  F/f1,F/f2,F/f3,G/g1,G/g2,G/g3,
-  R1/r1a,R2/r2a}
-  \draw (\e) -- (\a);
+\node[attribute] (upassword) at (-15,-2)
+    {password\_hash};
 
-% relationship lines with cardinalities
-\draw (U) -- node[card,pos=0.2,above]{M} (R1);
-\draw (R1) -- node[card,pos=0.8,above]{N} (S);
-\draw (A) -- node[card,pos=0.2,above]{M} (R2);
-\draw (R2) -- node[card,pos=0.8,above]{N} (S);
-\draw (S) -- node[card,pos=0.2,right]{M} (R3);
-\draw (R3) -- node[card,pos=0.7,right]{N} (G);
-\draw (S) -- node[card,pos=0.2,right]{1} (R4);
-\draw[double, double distance=2.6pt, thick] (R4) -- node[card,pos=0.75,right]{N} (F);
+\node[attribute] (ucreated) at (-9,-2)
+    {created\_at};
 
-% legend
-\node[draw, align=left, font=\scriptsize, inner sep=4pt, anchor=north west] at (-14.2,-4.6)
-  {\textbf{Legend}\\
-   Rectangle: entity set\\
-   Diamond: relationship set\\
-   Ellipse: attribute (underlined: key)\\
-   Dashed ellipse: derived attribute\\
-   Double line: total participation\\
-   \texttt{name} = composite attribute\\
-   \hspace{1.2em}(first\_name, middle\_name, last\_name)};
-\end{tikzpicture}}
-\caption{Entity--Relationship diagram of VibeCheck (Chen notation)}
+% Composite name components
+
+\node[attribute] (ufirst) at (-16,6.5)
+    {first\_name};
+
+\node[attribute] (umiddle) at (-12,6.5)
+    {middle\_name};
+
+\node[attribute] (ulast) at (-8,6.5)
+    {last\_name};
+
+\draw[conn] (User) -- (uid);
+\draw[conn] (User) -- (uemail);
+\draw[conn] (User) -- (uname);
+\draw[conn] (User) -- (upassword);
+\draw[conn] (User) -- (ucreated);
+
+\draw[conn] (uname) -- (ufirst);
+\draw[conn] (uname) -- (umiddle);
+\draw[conn] (uname) -- (ulast);
+
+
+% =====================================================
+% SONG ATTRIBUTES
+% =====================================================
+
+% =====================================================
+% SONG ATTRIBUTES - SPACED LAYOUT
+% =====================================================
+
+% First row
+\node[attribute] (sid) at (-5,5.5)
+    {\underline{song\_id}};
+
+\node[attribute] (stitle) at (-1.7,5.5)
+    {title};
+
+\node[attribute] (sduration) at (1.7,5.5)
+    {duration};
+
+% Second row
+\node[attribute] (syear) at (-5,8.5)
+    {release\_year};
+
+\node[attribute] (surl) at (0,8.5)
+    {audio\_file\_url};
+
+\node[attribute] (screated) at (5,8.5)
+    {created\_at};
+
+% Connections
+\draw[conn] (Song) -- (sid);
+\draw[conn] (Song) -- (stitle);
+\draw[conn] (Song) -- (sduration);
+\draw[conn] (Song) -- (syear);
+\draw[conn] (Song) -- (surl);
+\draw[conn] (Song) -- (screated);
+
+
+% =====================================================
+% ARTIST ATTRIBUTES
+% =====================================================
+
+\node[attribute] (aid) at (9,2.5)
+    {\underline{artist\_id}};
+
+\node[attribute] (aname) at (12,4.5)
+    {name};
+
+\node[attribute] (astage) at (16,2.5)
+    {stage\_name};
+
+\node[attribute] (afirst) at (8,7)
+    {first\_name};
+
+\node[attribute] (amiddle) at (12,7)
+    {middle\_name};
+
+\node[attribute] (alast) at (16,7)
+    {last\_name};
+
+\node[attribute] (adob) at (9,-2)
+    {dob};
+
+\node[attribute] (anationality) at (12,-2)
+    {nationality};
+
+\node[attribute] (aawards) at (15,-2)
+    {awards};
+
+\node[attribute] (abio) at (16,0)
+    {bio};
+
+\node[derived] (atotsongs) at (16,4.5)
+    {tot\_songs};
+
+\draw[conn] (Artist) -- (aid);
+\draw[conn] (Artist) -- (aname);
+\draw[conn] (Artist) -- (astage);
+\draw[conn] (Artist) -- (adob);
+\draw[conn] (Artist) -- (anationality);
+\draw[conn] (Artist) -- (aawards);
+\draw[conn] (Artist) -- (abio);
+\draw[conn] (Artist) -- (atotsongs);
+
+\draw[conn] (aname) -- (afirst);
+\draw[conn] (aname) -- (amiddle);
+\draw[conn] (aname) -- (alast);
+
+
+% =====================================================
+% FINGERPRINT ATTRIBUTES
+% =====================================================
+
+\node[attribute] (fid) at (-7,-10)
+    {\underline{fp\_id}};
+
+\node[attribute] (fhash) at (-5,-10)
+    {hash};
+
+\node[attribute] (foffset) at (-3,-10)
+    {time\_offset};
+
+\draw[conn] (Fingerprint) -- (fid);
+\draw[conn] (Fingerprint) -- (fhash);
+\draw[conn] (Fingerprint) -- (foffset);
+
+
+% =====================================================
+% GENRE ATTRIBUTES
+% =====================================================
+
+\node[attribute] (gid) at (3,-10)
+    {\underline{genre\_id}};
+
+\node[attribute] (gname) at (5,-10)
+    {name};
+
+\node[attribute] (gdescription) at (7,-10)
+    {description};
+
+\draw[conn] (Genre) -- (gid);
+\draw[conn] (Genre) -- (gname);
+\draw[conn] (Genre) -- (gdescription);
+
+
+% =====================================================
+% RELATIONSHIP DIAMONDS
+% =====================================================
+
+\node[relationship] (Recognizes) at (-6,0)
+    {Recognizes};
+
+\node[relationship] (Performs) at (6,0)
+    {Performs};
+
+\node[relationship] (Has) at (-4,-3.5)
+    {Has};
+
+\node[relationship] (Belongs) at (4,-3.5)
+    {Belongs to};
+
+
+% =====================================================
+% USER -- RECOGNIZES -- SONG (M:N)
+% =====================================================
+
+\draw[conn] (User.east) --
+    node[above]{M} (Recognizes.west);
+
+\draw[conn] (Recognizes.east) --
+    node[above]{N} (Song.west);
+
+\node[attribute] (recognizedat) at (-6,2.5)
+    {recognized\_at};
+
+\draw[conn] (Recognizes) -- (recognizedat);
+
+
+% =====================================================
+% SONG -- PERFORMS -- ARTIST (M:N)
+% =====================================================
+
+\draw[conn] (Song.east) --
+    node[above]{N} (Performs.west);
+
+\draw[conn] (Performs.east) --
+    node[above]{M} (Artist.west);
+
+\node[attribute] (role) at (6,2.5)
+    {role};
+
+\draw[conn] (Performs) -- (role);
+
+
+% =====================================================
+% SONG -- HAS -- FINGERPRINT (1:N)
+% =====================================================
+
+\draw[conn] (Song.south west) --
+    node[left, near start]{1} (Has.north east);
+
+\draw[conn] (Has.south west) --
+    node[left, near end]{N} (Fingerprint.north east);
+
+
+% =====================================================
+% SONG -- BELONGS TO -- GENRE (M:N)
+% =====================================================
+
+\draw[conn] (Song.south east) --
+    node[right, near start]{M} (Belongs.north west);
+
+\draw[conn] (Belongs.south east) --
+    node[right, near end]{N} (Genre.north west);
+
+\end{tikzpicture}%
+}
+
+\caption{Conceptual Entity-Relationship Diagram of VibeCheck}
+\label{fig:vibecheck-er}
+
 \end{figure}
 \end{landscape}
-
 %% ------------------------------------------------------------------ 5
 \section{Relational Schemas Obtained from ER}
 
@@ -354,7 +564,7 @@ Primary keys are underlined; foreign keys are listed below the relations.
   \item \textbf{Users}(\pk{user_id}, \cl{first_name}, \cl{middle_name}, \cl{last_name}, \cl{email}, \cl{password_hash}, \cl{created_at})
   \item \textbf{Artists}(\pk{artist_id}, \cl{first_name}, \cl{middle_name}, \cl{last_name}, \cl{stage_name}, \cl{dob}, \cl{nationality}, \cl{tot_songs}, \cl{awards}, \cl{bio})
   \item \textbf{Genres}(\pk{genre_id}, \cl{name}, \cl{description})
-  \item \textbf{Songs}(\pk{song_id}, \cl{title}, \cl{duration}, \cl{release_year}, \cl{audio_file_url}, \cl{created_at})
+  \item \textbf{Songs}(\pk{song_id}, \cl{title}, \cl{duration}, \cl{release_year}, \cl{created_at})
   \item \textbf{Song\_Artists}(\pk{song_id}, \pk{artist_id}, \cl{role})
   \item \textbf{Song\_Genres}(\pk{song_id}, \pk{genre_id})
   \item \textbf{Fingerprints}(\pk{fp_id}, \cl{song_id}, \cl{hash}, \cl{time_offset})
@@ -452,8 +662,7 @@ History & \cl{song_id} & Songs(\cl{song_id}) \\
 \cl{duration} & \cl{INT} & NOT NULL, CHECK $> 0$ (seconds) \\
 \hline
 \cl{release_year} & \cl{INT} & CHECK $\geq 1900$ \\
-\hline
-\cl{audio_file_url} & \cl{VARCHAR(500)} & optional (file name or location of the audio) \\
+
 \hline
 \cl{created_at} & \cl{TIMESTAMP} & DEFAULT current time \\
 \hline
@@ -663,10 +872,10 @@ Genres & Yes & Yes & Yes & The determinants \cl{genre_id} and \cl{name} are both
 Songs & Yes & Yes & Yes & The only determinant is the key \cl{song_id}; artist and genre data are not stored here. \
 \hline
 
-Song_Artists & Yes & Yes & Yes & The only non-key attribute, \cl{role}, depends on the whole key (\cl{song_id}, \cl{artist_id}), not on a part of it. \
+Song\_Artists & Yes & Yes & Yes & The only non-key attribute, \cl{role}, depends on the whole key (\cl{song_id}, \cl{artist_id}), not on a part of it. \
 \hline
 
-Song_Genres & Yes & Yes & Yes & All attributes belong to the key, so there are no non-prime attributes. \
+Song\_Genres & Yes & Yes & Yes & All attributes belong to the key, so there are no non-prime attributes. \
 \hline
 
 Fingerprints & Yes & Yes & Yes & Single-attribute key \cl{fp_id}; \cl{song_id}, \cl{hash}, and \cl{time_offset} describe the fingerprint row. \
